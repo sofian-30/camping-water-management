@@ -1,0 +1,25 @@
+services:
+  camping-water:
+    image: ouass/camping-water:latest
+    container_name: camping-water-container
+    ports:
+      - "5000:5000"
+    environment:
+      - ENV=production
+    volumes:
+      - ./data:/app/data
+    networks:
+      - app-network
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
