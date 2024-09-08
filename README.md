@@ -1,70 +1,129 @@
+
 # Projet de Suivi de Consommation d'Eau et de Détection des Fuites
 
 ## Description du Projet
 
-Ce projet consiste à analyser les données de consommation d'eau d'un camping, où chaque mobile home et chaque embranchement du réseau d'eau est équipé d'un compteur. L'objectif est de calculer la consommation totale d'eau pour chaque compteur et de détecter la quantité d'eau perdue à cause des fuites.
+Ce projet vise à analyser les données de consommation d'eau d'un camping. Chaque mobile home et embranchement du réseau d'eau est équipé d'un compteur. Le but est de calculer la consommation totale d'eau pour chaque compteur et de détecter les fuites d'eau. 
 
-Les résultats attendus incluent :
-- `totals.csv` : le total d'eau consommée par chaque compteur.
-- `leaks.csv` : le total d'eau perdue par les fuites après chaque compteur.
-- `daily_leaks.csv` : les fuites d'eau par jour pour identifier les jours avec des fuites importantes.
+Les résultats générés incluent :
+- **totals.csv** : Le total d'eau consommée par chaque compteur.
+- **leaks.csv** : La quantité d'eau perdue par les fuites après chaque compteur.
+- **daily_leaks.csv** : Les fuites d'eau par jour, permettant d'identifier les journées avec des fuites importantes.
 
 ## Technologies Utilisées
 
-- **Python** : Le choix du langage Python est dû à sa simplicité et à sa richesse en bibliothèques pour l'analyse de données.
-- **Pandas** : Utilisé pour la manipulation des données. Il permet de lire des fichiers CSV, de traiter les données, et de les analyser facilement.
-- **Matplotlib** : Utilisé pour visualiser les résultats. Les graphiques générés permettent de mieux comprendre la répartition de la consommation d'eau et des fuites dans le réseau.
-- **Docker** et **Docker Compose** : Pour faciliter l'exécution du projet et garantir un environnement cohérent entre les différentes machines.
+- **Python** : Langage utilisé pour l'analyse des données, sa simplicité et ses nombreuses bibliothèques en font un excellent choix pour ce projet.
+- **Pandas** : Utilisé pour manipuler et analyser les données en format CSV.
+- **Matplotlib** : Bibliothèque utilisée pour générer des graphiques et visualiser les données.
+- **PostgreSQL** : Une base de données relationnelle utilisée pour stocker les données des capteurs.
+- **Docker & Docker Compose** : Utilisés pour encapsuler l'application dans des conteneurs et assurer la portabilité et la reproductibilité sur n'importe quel environnement de machine.
 
-## Installation et Exécution du Projet
+## Prérequis
 
-### Prérequis
+- **Docker** : Assurez-vous que Docker est installé sur votre machine. Vous pouvez le télécharger [ici](https://docs.docker.com/get-docker/).
+- **Docker Compose** : Outil pour définir et gérer plusieurs conteneurs Docker à la fois. Il est souvent inclus avec Docker.
+- **Git** : Pour cloner le projet sur votre machine. Téléchargez-le [ici](https://git-scm.com/).
 
-- Docker
-- Docker Compose
+### Installation des Dépendances Python
 
-### Étapes d'Exécution
+Les dépendances Python utilisées dans ce projet sont listées dans le fichier `requirements.txt`. Vous pouvez générer ce fichier à partir des bibliothèques Python installées dans votre environnement en exécutant :
 
-1. Clonez le dépôt du projet :
+```bash
+pip freeze > requirements.txt
+```
+
+Cela capture toutes les versions de bibliothèques actuellement installées, comme :
+
+```
+contourpy==1.3.0
+cycler==0.12.1
+fonttools==4.53.1
+kiwisolver==1.4.7
+matplotlib==3.9.2
+numpy==2.1.1
+packaging==24.1
+pandas==2.2.2
+pillow==10.4.0
+pyparsing==3.1.4
+python-dateutil==2.9.0.post0
+pytz==2024.1
+six==1.16.0
+tzdata==2024.1
+```
+
+Les bibliothèques principales ici sont :
+- **Pandas** : Pour le traitement des données.
+- **Matplotlib** : Pour la création des graphiques de consommation et des fuites.
+
+## Configuration du Projet avec Docker et Docker Compose
+
+### Étapes d'Installation et de Lancement du Projet
+
+1. **Cloner le dépôt** :
 
     ```bash
     git clone https://github.com/sofian-30/camping-water-management.git
-    cd votre-projet
+    cd camping-water-management
     ```
 
-2. Construisez et démarrez les services Docker :
+2. **Construire et démarrer les services** :
+
+    Cette étape utilise Docker Compose pour construire deux conteneurs :
+    - Un pour l'application Python.
+    - Un autre pour la base de données PostgreSQL.
 
     ```bash
     docker-compose up --build
     ```
 
-   Cette commande construira l'image Docker et démarrera le conteneur.
+3. **PostgreSQL et Base de Données** :
 
-3. Les scripts Python seront exécutés automatiquement dans le conteneur, générant les fichiers `totals.csv`, `leaks.csv` et `daily_leaks.csv` ainsi que les graphiques pour visualiser les résultats.
+   Le fichier `docker-compose.yml` crée automatiquement une instance PostgreSQL avec les informations suivantes :
+   - **Utilisateur** : `postgres`
+   - **Mot de passe** : `password`
+   - **Nom de la base de données** : `mydatabase`
 
-4. Les résultats et les graphiques sont sauvegardés dans le répertoire `output` du projet.
+   Ces informations sont définies dans la section `db` du fichier `docker-compose.yml`. Une fois le conteneur démarré, PostgreSQL est accessible à partir du conteneur de l'application.
 
-## Points d'Évaluation
+4. **Exécution du code** :
 
-### Respect des Consignes
+   Le script Python principal `main.py` est exécuté automatiquement lorsque le conteneur de l'application est démarré. Il traite les données, détecte les fuites et génère les fichiers de résultats suivants dans le dossier `output` :
+   - **totals.csv**
+   - **leaks.csv**
+   - **daily_leaks.csv**
+   - Divers graphiques pour visualiser les résultats.
 
-Toutes les consignes ont été respectées, notamment le calcul de la consommation totale d'eau et la détection des fuites, avec la génération des fichiers CSV requis.
+5. **Vérifiez les sorties** :
 
-### Explication du Travail Réalisé
+   Les fichiers générés et les graphiques sont sauvegardés dans le dossier `output`.
 
-Le projet charge les données des capteurs et des relevés d'eau, vérifie la qualité des données (données manquantes, doublons), et calcule les totaux d'eau consommée ainsi que les pertes d'eau dues aux fuites. Les résultats sont visualisés à l'aide de graphiques pour une meilleure interprétation.
+### Structure du Projet
 
-### Clarté et Structure du Code
+Voici la structure du projet une fois cloné :
 
-Le code est structuré de manière claire et organisé en étapes logiques :
-1. Chargement des données
-2. Vérification des données manquantes et des doublons
-3. Calcul des totaux d'eau consommée
-4. Détection et calcul des fuites d'eau
-5. Fuites d'eau quotidienne
-6. Visualisation des résultats
+```
+camping-water-management/
+├── app/
+├── data/
+├── output/
+├── src/
+│   └── main.py
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── ...
+```
 
+- **app/** : Répertoire de travail du conteneur Docker.
+- **data/** : Contient les fichiers CSV d'entrée (comme `sensors.csv` et `records.csv`).
+- **output/** : Contient les fichiers générés comme les totaux et les graphiques.
+- **src/** : Contient le script principal `main.py`.
+- **Dockerfile** : Fichier de configuration pour construire l'image Docker de l'application.
+- **docker-compose.yml** : Fichier pour orchestrer plusieurs conteneurs Docker.
 
-## Commentaires
+---
 
-Les données sont analysées et visualisées pour assurer une compréhension complète des comportements de consommation d'eau et des fuites potentielles. Les outils utilisés sont bien adaptés pour ce type d'analyse et permettent une extensibilité future si des analyses supplémentaires sont nécessaires.
+## Notes Importantes
+
+- **Manipulation de la Base de Données** : PostgreSQL est automatiquement configuré via Docker Compose. Aucune action manuelle n'est requise pour la base de données.
+- **Volumes Docker** : Le répertoire local `output` est monté dans le conteneur, permettant aux fichiers générés d'être accessibles sur votre machine hôte.

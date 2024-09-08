@@ -1,8 +1,9 @@
+
 # Utiliser une image Python 3.10 officielle comme base
 FROM python:3.10-slim
 
-# Définir le répertoire de travail à l'intérieur du conteneur
-WORKDIR /app
+# Définir le répertoire de travail à l'intérieur du conteneur (#code à tester!!!!!!)
+WORKDIR /app                    
 
 # Copier le fichier requirements.txt et installer les dépendances
 COPY requirements.txt .

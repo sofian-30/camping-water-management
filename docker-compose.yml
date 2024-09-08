@@ -1,18 +1,19 @@
+version: '3.8'
+
 services:
   camping-water:
-    image: ouass/camping-water:latest
+    build: .
     container_name: camping-water-container
-    ports:
-      - "5000:5000"
     environment:
       - ENV=production
     volumes:
-      - ./data:/app/data
+      - ./output:/app/output
     networks:
       - app-network
 
   db:
     image: postgres:13
+    container_name: camping-water-management-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -23,3 +24,5 @@ services:
 networks:
   app-network:
     driver: bridge
+
+

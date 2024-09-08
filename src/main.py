@@ -41,7 +41,7 @@ print(records['value'].describe())
 # Calculer le total d'eau consommée pour chaque capteur
 totals = records.groupby('transmitter_addr')['value'].sum().reset_index()
 totals.columns = ['sensor_addr', 'total']
-totals.to_csv('totals.csv', index=False)
+totals.to_csv('/app/output/totals.csv', index=False) 
 
 # Calculer les fuites d'eau
 # Fusionner sensors avec records pour obtenir les valeurs par capteur parent
@@ -55,7 +55,7 @@ parent_totals.columns = ['sensor_addr', 'total']
 leaks = pd.merge(totals, parent_totals, on='sensor_addr', how='outer', suffixes=('_child', '_parent'))
 leaks['total'] = leaks['total_parent'] - leaks['total_child']
 leaks = leaks[['sensor_addr', 'total']].dropna()
-leaks.to_csv('leaks.csv', index=False)
+leaks.to_csv('/app/output/leaks.csv', index=False) 
 
 
 # Visualiser les totaux d'eau consommée par chaque capteur
@@ -66,7 +66,7 @@ plt.ylabel('Total d\'Eau Consommée (L)')
 plt.title('Total d\'Eau Consommée par Capteur')
 plt.xticks(rotation=90)
 plt.tight_layout()
-plt.show()
+plt.savefig('/app/output/graphique_eau_capteur.png')  
 
 # Visualiser les fuites d'eau après chaque capteur
 plt.figure(figsize=(12, 6))
@@ -76,7 +76,7 @@ plt.ylabel('Total d\'Eau Perdue (L)')
 plt.title('Total d\'Eau Perdue par Fuite après chaque Capteur')
 plt.xticks(rotation=90)
 plt.tight_layout()
-plt.show()
+plt.savefig('/app/output/graphique_fuite_capteur.png')  
 
 # Convertir le timestamp en date pour regrouper les données par jour
 records['date'] = pd.to_datetime(records['timestamp'], unit='s').dt.date
@@ -101,7 +101,7 @@ daily_leaks = daily_leaks[['sensor_addr', 'date', 'leak']].dropna()
 daily_leaks = daily_leaks[daily_leaks['leak'] > 0]
 
 # Sauvegarder les résultats dans un fichier CSV
-daily_leaks.to_csv('daily_leaks.csv', index=False)
+daily_leaks.to_csv('/app/output/daily_leaks.csv', index=False)  
 
 # Visualiser les fuites d'eau par jour pour chaque capteur
 plt.figure(figsize=(12, 6))
@@ -117,7 +117,7 @@ plt.title('Fuites d\'Eau Journalières par Capteur')
 plt.xticks(rotation=45)
 plt.legend(title='Adresse du Capteur')
 plt.tight_layout()
-plt.show()
+plt.savefig('/app/output/graphique_capteur_graphique.png') 
 
 # Calculer les fuites d'eau totales par jour pour tout le réseau
 total_daily_leaks = daily_leaks.groupby('date')['leak'].sum().reset_index()
@@ -130,4 +130,4 @@ plt.ylabel('Total d\'Eau Perdue (L)')
 plt.title('Fuites d\'Eau Totales Journalières dans le Réseau')
 plt.xticks(rotation=45)
 plt.tight_layout()
-plt.show()
+plt.savefig('/app/output/graphique_fuite_eau_jour.png') 
